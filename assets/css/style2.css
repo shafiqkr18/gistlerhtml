@@ -1,0 +1,6 @@
+.comparisonlist li::before{
+	top:-2px!important;
+	background:black;
+}
+
+body{background:#000!important;}

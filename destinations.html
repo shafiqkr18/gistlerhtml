@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Simple icons</title>
+	
+	
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+		width:100%;
+      }
+      #map2 {
+        height: 380px;
+		max-width:100%;
+		width:900px;
+      }
+    </style>
+	<style type="text/css">
+  html, body { height: 100%; margin: 0; padding: 0; }
+  #map {height: 100%;}
+  #distance{color: green;}
+</style>
+	<link rel="shortcut icon" href="assets/ico/favicon.ico">
+
+    
+	
+	
+  </head>
+  <body>
+	
+						
+<p id="distance"> </p>
+<div id="map"></div>
+		
+<script>
+ var x = document.getElementById('map');
+ function initMap() {
+  google.maps.LatLng.prototype.distanceFrom = function(latlng) {
+  var lat = [this.lat(), latlng.lat()]
+  var lng = [this.lng(), latlng.lng()]
+  var R = 6378137;
+  var dLat = (lat[1]-lat[0]) * Math.PI / 180;
+  var dLng = (lng[1]-lng[0]) * Math.PI / 180;
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+  Math.cos(lat[0] * Math.PI / 180 ) * Math.cos(lat[1] * Math.PI / 180 ) *
+  Math.sin(dLng/2) * Math.sin(dLng/2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  var d = R * c;
+  return Math.round(d);
+};
+    lhrmyLatlng = {lat: 25.09523762552123 , lng: 55.16304016113281};
+//    m1lat = 31.592504;
+//    m1lon = 74.309724;
+    map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 25.09523762552123, lng: 55.16304016113281},
+    zoom: 12
+    });
+var markers = [
+{
+    "title": 'Destination 1',
+    "lat": '25.129794883232517',
+    "lng": '55.19401682983403',
+    "description": 'Destination 1'
+},
+{
+    "title": 'Destination 2',
+    "lat": '25.08409483130435',
+    "lng": '55.14354838500981',
+    "description": 'Destination 2'
+},
+{
+    "title": 'Destination 3',
+    "lat": '25.09124630654263',
+    "lng": '55.21907939086918',
+    "description": 'Destination 3'
+},
+  {
+    "title": 'Destination 4',
+    "lat": '25.05859486749019',
+    "lng": '55.18852366577153',
+    "description": 'Destination 4'
+}
+
+];
+/*    lhr = new google.maps.Marker({
+position: lhrmyLatlng,
+map: map,
+title: 'Click to zoom'
+});*/
+
+//var images = [{"images/marker1.png"}, {"images/marker2.png"}, {"images/marker3.png"}, {"images/marker4.png"}, {"images/marker6.png"}];
+
+	var image0 = 'images/marker1.png';
+	var image1 = 'images/marker2.png';
+	var image2 = 'images/marker3.png';
+	var image3 = 'images/marker4.png';
+	var image4 = 'images/icon-green.png';
+
+var infoWindow = new google.maps.InfoWindow();
+
+  
+  
+  marker4 = new google.maps.Marker({
+        position: {lat: 25.09523762552123, lng: 55.16304016113281},
+		map: map,
+        visible: true,
+		icon: image4
+    });
+  
+
+ for (var i = 0; i < markers.length; i++) {
+  data = markers[i];
+  myLatlng = new google.maps.LatLng(data.lat, data.lng);
+  marker = new google.maps.Marker({
+     position: myLatlng,
+     map: map,
+     animation: google.maps.Animation.DROP,
+     title: data.title,
+		icon: image0
+  });
+(function (marker, data) {
+ google.maps.event.addListener(marker, "click", function (event) {
+     lat = event.latLng.lat();
+     lng = event.latLng.lng();
+     if (marker.getAnimation() !== null) {
+        marker.setAnimation(null);
+    } else {
+     marker.setAnimation(google.maps.Animation.BOUNCE);
+    }
+    mapLocation();
+    calcRoute();
+    var p1 = new google.maps.LatLng(25.09523762552123,55.16304016113281);
+    var  p2 = new google.maps.LatLng(lat, lng);
+    dist = p2.distanceFrom(p1);
+    
+    infoWindow.setContent("<div style = 'width:200px;min-height:40px'>" + dist/1000 + " Km" + "</div>");
+    infoWindow.open(map, marker);
+
+});
+ })(marker, data);
+}
+}
+ function mapLocation() {
+   
+   directionsService = new google.maps.DirectionsService();
+
+    directionsDisplay = new google.maps.DirectionsRenderer();
+//    var lahore = new google.maps.LatLng(31.592504, 74.309724);
+//    var mapOptions = {
+//      zoom: 8,
+//      center: map
+//    };
+  //  map = new google.maps.Map(document.getElementById('map'), mapOptions);
+   // directionsDisplay.setMap(map);
+
+  }
+  function calcRoute() {
+    var start = new google.maps.LatLng(25.09523762552123, 55.16304016113281);
+    var end = new google.maps.LatLng(this.lat, this.lng);
+    var request = {
+      origin: start,
+      destination: end,
+      travelMode: google.maps.TravelMode.DRIVING
+    };
+    directionsService.route(request, function(response, status) {
+      if (status === google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+        directionsDisplay.setMap(map);
+      } else {
+        alert("Directions Request from " + start.toUrlValue(6) + " to " + end.toUrlValue(6) + " failed: " + status);
+      }
+    });
+  }
+
+  
+</script>
+<script  async defer src="https://maps.googleapis.com/maps/api/js?&callback=initMap"></script>
+		
+		
+  </body>
+</html>
